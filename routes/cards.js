@@ -89,7 +89,7 @@ db.initialize(
               res.status(404).json({ message: "No se actualizó" });
               throw error;
             }
-
+            console.log('resultado de put', result)
             res.status(204).json({ message: "Se actualizo" });
           }
         );
