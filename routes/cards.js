@@ -16,15 +16,16 @@ db.initialize(
     // successCallback
     // get all items
     dbCollection.find().toArray(function (err, result) {
-      if (err) throw err;
+      if (err) console.log(err);
       console.log(result);
     });
 
     // << db CRUD routes >>
     /* GET all cards . */
     router.get("/", function (req, res, next) {
-      dbCollection.find().toArray((error, result) => {
-        if (error) throw error;
+      console.log(req.query.correo)
+      dbCollection.find({correo: req.query.correo}).toArray((error, result) => {
+        if (error) console.log(error);
         res.status(200).send(result);
       });
     });
@@ -38,7 +39,7 @@ db.initialize(
           console.log("result", result);
           if (error) {
             res.status(404).json({ error: "404 Not found" });
-            throw error;
+            console.log(error);
           }
           // return item
           res.status(200).json(result);
@@ -59,11 +60,11 @@ db.initialize(
       const item = req.body;
       dbCollection.insertOne(item, (error, result) => {
         // callback of insertOne
-        if (error) throw error;
+        if (error) console.log(error);
         // return updated list
         dbCollection.find().toArray((_error, _result) => {
           // callback of find
-          if (_error) throw _error;
+          if (_error) console.log(error);
           res.status(201).json(_result);
         });
       });
@@ -87,7 +88,7 @@ db.initialize(
           (error, result) => {
             if (error) {
               res.status(404).json({ message: "No se actualizó" });
-              throw error;
+              console.log(error);
             }
             console.log('resultado de put', result)
             res.status(204).json({ message: "Se actualizo" });
@@ -113,7 +114,7 @@ db.initialize(
         dbCollection.deleteOne(
           { _id: new ObjectId(itemId) },
           function (error, result) {
-            if (error) throw error;
+            if (error) console.log(error);
             // send back entire updated list after successful request
             
             res.status(204).json({ message: "Se eliminó correctamente" });
