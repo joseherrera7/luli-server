@@ -23,11 +23,15 @@ db.initialize(
     // << db CRUD routes >>
     /* GET all cards . */
     router.get("/", function (req, res, next) {
-      console.log(req.query.correo)
-      dbCollection.find({correo: req.query.correo}).toArray((error, result) => {
-        if (error) console.log(error);
-        res.status(200).send(result);
-      });
+      console.log(req.query.correo);
+      try {
+        dbCollection
+          .find({ correo: req.query.correo })
+          .toArray((error, result) => {
+            if (error) console.log(error);
+            res.status(200).send(result);
+          });
+      } catch (error) {}
     });
 
     // GET card by ID
@@ -90,7 +94,7 @@ db.initialize(
               res.status(404).json({ message: "No se actualizó" });
               console.log(error);
             }
-            console.log('resultado de put', result)
+            console.log("resultado de put", result);
             res.status(204).json({ message: "Se actualizo" });
           }
         );
@@ -116,9 +120,8 @@ db.initialize(
           function (error, result) {
             if (error) console.log(error);
             // send back entire updated list after successful request
-            
+
             res.status(204).json({ message: "Se eliminó correctamente" });
-            
           }
         );
       } else {
