@@ -1,8 +1,8 @@
 var express = require("express");
-const createHttpError = require("http-errors");
 var router = express.Router();
-const utils = require("../public/javascripts/utils");
+var jwt = require("jsonwebtoken");
 var ObjectId = require("mongodb").ObjectId;
+var config = require("../public/javascripts/configs");
 
 // << db setup >>
 const db = require("../db");
@@ -22,7 +22,22 @@ db.initialize(
 
     // << db CRUD routes >>
     /* GET all cards . */
-    router.get("/", function (req, res, next) {
+    router.get("/", function (req, res) {
+      var token = req.headers["authorization"];
+      if (!token)
+        return res
+          .status(401)
+          .send({ auth: false, message: "No token provided." });
+
+      console.log(token);
+      jwt.verify(token, config.secret, function (err) {
+        if (err) {
+          console.log(res);
+          return res
+            .status(500)
+            .send({ auth: false, message: "Failed to authenticate token." });
+        }
+      });
       console.log(req.query.correo);
       try {
         dbCollection
@@ -35,7 +50,22 @@ db.initialize(
     });
 
     // GET card by ID
-    router.get("/:id", function (req, res, next) {
+    router.get("/:id", function (req, res) {
+      var token = req.headers["authorization"];
+      if (!token)
+        return res
+          .status(401)
+          .send({ auth: false, message: "No token provided." });
+
+      console.log(token);
+      jwt.verify(token, config.secret, function (err) {
+        if (err) {
+          console.log(res);
+          return res
+            .status(500)
+            .send({ auth: false, message: "Failed to authenticate token." });
+        }
+      });
       var _id = req.params.id;
       if (ObjectId.isValid(_id)) {
         dbCollection.findOne({ _id: new ObjectId(_id) }, (error, result) => {
@@ -60,9 +90,24 @@ db.initialize(
     });
 
     // POST card
-    router.post("/", function (req, res, next) {
+    router.post("/", function (req, res) {
+      var token = req.headers["authorization"];
+      if (!token)
+        return res
+          .status(401)
+          .send({ auth: false, message: "No token provided." });
+
+      console.log(token);
+      jwt.verify(token, config.secret, function (err) {
+        if (err) {
+          console.log(res);
+          return res
+            .status(500)
+            .send({ auth: false, message: "Failed to authenticate token." });
+        }
+      });
       const item = req.body;
-      dbCollection.insertOne(item, (error, result) => {
+      dbCollection.insertOne(item, (error) => {
         // callback of insertOne
         if (error) console.log(error);
         // return updated list
@@ -81,7 +126,22 @@ db.initialize(
     });
 
     // PUT card by ID
-    router.put("/:id", function (req, res, next) {
+    router.put("/:id", function (req, res) {
+      var token = req.headers["authorization"];
+      if (!token)
+        return res
+          .status(401)
+          .send({ auth: false, message: "No token provided." });
+
+      console.log(token);
+      jwt.verify(token, config.secret, function (err) {
+        if (err) {
+          console.log(res);
+          return res
+            .status(500)
+            .send({ auth: false, message: "Failed to authenticate token." });
+        }
+      });
       const itemId = req.params.id;
       const item = req.body;
       console.log("Editing item: ", itemId, " to be ", item);
@@ -110,14 +170,29 @@ db.initialize(
     });
 
     // GET card
-    router.delete("/:id", function (req, res, next) {
+    router.delete("/:id", function (req, res) {
+      var token = req.headers["authorization"];
+      if (!token)
+        return res
+          .status(401)
+          .send({ auth: false, message: "No token provided." });
+
+      console.log(token);
+      jwt.verify(token, config.secret, function (err) {
+        if (err) {
+          console.log(res);
+          return res
+            .status(500)
+            .send({ auth: false, message: "Failed to authenticate token." });
+        }
+      });
       const itemId = req.params.id;
       console.log("Delete item with id: ", itemId);
 
       if (ObjectId.isValid(itemId)) {
         dbCollection.deleteOne(
           { _id: new ObjectId(itemId) },
-          function (error, result) {
+          function (error) {
             if (error) console.log(error);
             // send back entire updated list after successful request
 
