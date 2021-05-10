@@ -22,6 +22,20 @@ db.initialize(
 
     // << db CRUD routes >>
     /* GET all cards . */
+    /**
+     * @openapi
+     * /cards:
+     *   get:
+     *     summary: Get all cards
+     *     description: Get all cards
+     *     responses:
+     *        200:
+     *         description: All cards returned.
+     *        500:
+     *         description: Internal Error.
+     *        401:
+     *         description: No token provided.
+     */
     router.get("/", function (req, res) {
       var token = req.headers["authorization"];
       if (!token)
@@ -49,7 +63,22 @@ db.initialize(
       } catch (error) {}
     });
 
-    // GET card by ID
+    /**
+     * @openapi
+     * /cards/{id}:
+     *   get:
+     *     summary: Get an card with an specific id
+     *     description: register a new user
+     *     responses:
+     *        200:
+     *         description: All cards returned.
+     *        500:
+     *         description: Internal Error.
+     *        401:
+     *         description: No token provided.
+     *        404:
+     *         description: Not found in DB.
+     */
     router.get("/:id", function (req, res) {
       var token = req.headers["authorization"];
       if (!token)
@@ -90,6 +119,22 @@ db.initialize(
     });
 
     // POST card
+
+    /**
+     * @openapi
+     * /cards:
+     *   post:
+     *     summary: Post a new card
+     *     description: Post a new card
+     *     responses:
+     *        201:
+     *         description: Modify completed.
+     *        500:
+     *         description: Internal Error.
+     *        401:
+     *         description: No token provided.
+     *
+     */
     router.post("/", function (req, res) {
       var token = req.headers["authorization"];
       if (!token)
@@ -126,6 +171,23 @@ db.initialize(
     });
 
     // PUT card by ID
+     /**
+     * @openapi
+     * /cards:
+     *   put:
+     *     summary: Modify a card
+     *     description: Modify a card
+     *     responses:
+     *        204:
+     *         description: Modify completed.
+     *        500:
+     *         description: Internal Error.
+     *        401:
+     *         description: No token provided.
+     *        404:
+     *         description: Not found.
+     *
+     */
     router.put("/:id", function (req, res) {
       var token = req.headers["authorization"];
       if (!token)
@@ -170,6 +232,23 @@ db.initialize(
     });
 
     // GET card
+         /**
+     * @openapi
+     * /cards:
+     *   put:
+     *     summary: Delete a card
+     *     description: Delete a card
+     *     responses:
+     *        204:
+     *         description: Delete completed.
+     *        500:
+     *         description: Internal Error.
+     *        401:
+     *         description: No token provided.
+     *        404:
+     *         description: Not found.
+     *
+     */
     router.delete("/:id", function (req, res) {
       var token = req.headers["authorization"];
       if (!token)
@@ -190,15 +269,12 @@ db.initialize(
       console.log("Delete item with id: ", itemId);
 
       if (ObjectId.isValid(itemId)) {
-        dbCollection.deleteOne(
-          { _id: new ObjectId(itemId) },
-          function (error) {
-            if (error) console.log(error);
-            // send back entire updated list after successful request
+        dbCollection.deleteOne({ _id: new ObjectId(itemId) }, function (error) {
+          if (error) console.log(error);
+          // send back entire updated list after successful request
 
-            res.status(204).json({ message: "Se eliminó correctamente" });
-          }
-        );
+          res.status(204).json({ message: "Se eliminó correctamente" });
+        });
       } else {
         res.status(404).json({ message: "No se eliminó" });
       }

@@ -11,10 +11,36 @@ const collectionName = "users";
 
 db.initialize(dbName, collectionName, function (dbCollection) {
   /* GET VERIFY. */
+  /**
+   * @openapi
+   * /users:
+   *   get:
+   *     summary: Returns a JSON with verify true.
+   *     description: Verify that the API is running
+   *     responses:
+   *       200:
+   *         description: Returns a JSON with verify true.
+   */
   router.get("/", function (req, res, next) {
     res.json({ verify: "true" });
   });
+
   /* POST LOGIN. */
+  /**
+   * @openapi
+   * /users:
+   *   post:
+   *     summary: Login with the user
+   *     description: Login with the specified user
+   *     responses:
+   *        200:
+   *         description: Auth complete.
+   *        500:
+   *         description: Internal Error.
+   *        401:
+   *         description: No token provided.
+   *
+   */
   router.post("/", function (req, res, next) {
     dbCollection.findOne({ correo: req.body.correo }, (error, user) => {
       if (error) {
@@ -48,6 +74,20 @@ db.initialize(dbName, collectionName, function (dbCollection) {
     });
   });
   /* POST REGISTER. */
+  /**
+   * @openapi
+   * /users/register:
+   *   post:
+   *     summary: register a new user
+   *     description: register a new user
+   *     responses:
+   *        200:
+   *         description: Register complete.
+   *        500:
+   *         description: Internal Error.
+   *        401:
+   *         description: No token provided.
+   */
   router.post("/register", function (req, res, next) {
     var hashedPassword = bcrypt.hashSync(req.body.contrasena, 8);
     let usuario = {
@@ -74,10 +114,6 @@ db.initialize(dbName, collectionName, function (dbCollection) {
         });
       }
     });
-  });
-
-  router.get("/me", function (req, res, next) {
-    
   });
 
   // add the middleware function

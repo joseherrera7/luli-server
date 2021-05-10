@@ -5,9 +5,27 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var cardsRouter = require('./routes/cards');
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: 'Luli API',
+      description: "Luli api for cards.",
+      servers: [
+        "http://localhost:2021"
+      ]
+    }
+  },
+  apis: ['./routes/*.js'],
+}
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 var app = express();
 
@@ -21,6 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/v1/cards', cardsRouter)
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
