@@ -88,7 +88,7 @@ db.initialize(dbName, collectionName, function (dbCollection) {
    *        401:
    *         description: No token provided.
    */
-  router.post("/register", function (req, res, next) {
+  router.post("/register", function (req, res, next) { 
     var hashedPassword = bcrypt.hashSync(req.body.contrasena, 8);
     let usuario = {
       correo: req.body.correo,
